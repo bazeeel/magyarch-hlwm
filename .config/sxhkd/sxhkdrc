@@ -1,18 +1,18 @@
-####################################################################
+    ####################################################################
               # Basic herbstluftwm keybinds #
 ####################################################################
 
 # Main and float terminal
 super + {_,shift + } Return
-    {$TERMINAL, $TERMFLOAT -g 110x30+530+260}
+    {$TERMINAL,$TERMINAL --class Float}
 
 # Dmenu2 and rofi(window switcher, application launcher)
 super + {_,shift +} d
-    {dmenu_run -i -p 'Search' -nb '#1a1a1a' -sb '#2e8b57' -fn 'JetBrains Mono Medium-12' -w '760' -h '24' -x '574' -y '48',rofi_run -r}
+    {dmenu_run -i -c -g 1 -l 10 -p 'Search' -nb '#1a1a1a' -sb '#2e8b57' -fn 'JetBrains Mono Medium-12',$TERMINAL --class Floating -e flaunch.sh}
 
 # Tui filemanager and same command with sudo
 super + {_,shift + } r
-    {$TERMINAL -e $FILE, $TERMINAL -e sudo $FILE}
+    {$TERMINAL -e $FILE,dunstctl close-all}
 
 # Show keys with rofi/default gui editor
 super + {_,shift + } e
@@ -20,7 +20,7 @@ super + {_,shift + } e
 
 # News, tui music player
 super + {_,shift + } n
-    {$TERMINAL -e newsboat, $TERMFLOAT -g 110x30+530+300 -e ncmpcpp}
+    {$TERMINAL --class Float -e newsboat,$TERMINAL --class Float -e ncmpcpp}
 
 # Htop,gtop system monitor
 super + {_,shift + } i
@@ -48,7 +48,7 @@ super + Escape
 
 # Volume control
 alt + {Up,Down}
-    {amixer set Master 10%+, amixer set Master 10%-}
+    {pamixer --allow-boost -i 10 >/dev/null,pamixer --allow-boost -d 10 >/dev/null}
 
 # Screencast and Stream to twitch 
 super + {_,shift + } KP_Home
@@ -68,7 +68,7 @@ super + F2
 
 # Select Display
 super + F3                    
-    displayselect
+    herbstclient quit && killall sxhkd
 
 # Take a picture
 super + {F4,F5}
@@ -95,23 +95,19 @@ super + F12
 ############################################################
 
 # Splitting frames
-alt + {u,o,z,i,e}
-    herbstclient split {bottom 0.5,horiz 0.3,top 0.3,vertical 0.5,auto}
+super + {h,v}
+    herbstclient split {bottom 0.5,right 0.5}
 
 # Moving clients
-super + shift + {Left,Down,Up,Right}
-      herbstclient shift {left,down,up,right}
+#super + shift + {Left,Down,Up,Right}
+ #     herbstclient shift {left,down,up,right}
 
-super + shift + {h,j,k,l}
-      herbstclient shift {left,down,up,right}
-
-# Resizing frames
-super + control + {Left,Down,Up,Right}
-    herbstclient resize {left +0.01,down +0.01,up +0.01,right +0.01}
+#super + shift + {h,j,k,l}
+ #     herbstclient shift {left,down,up,right}
 
 # Pseudotile
-super + {_,shift + } s
-    herbstclient {pseudotile toggle, cycle_monitor}
+super + y 
+    herbstclient cycle_monitor
 
 # Focusing windows
 super + {_,shift + } Tab
@@ -121,12 +117,15 @@ super + {_,shift + } Tab
 super + {Left,Down,Up,Right}
     herbstclient {focus left,focus down,focus up,focus right}
 
-super + {h,j,k,l}
-    herbstclient {focus left,focus down,focus up,focus right}
+#super + {h,j,k,l}
+ #   herbstclient {focus left,focus down,focus up,focus right}
 
 # Close window
-super + q
-    herbstclient close
+super + {_,shift + }q
+    herbstclient {close,quit}
+
+super + x ; q
+    herbstclient close_and_remove
 
 # Reload Herbstluftwm
 super + shift + Escape
@@ -134,10 +133,10 @@ super + shift + Escape
 
 # Cycle layout
 super + {_,shift + } f
-    herbstclient {fullscreen toggle, floating toggle}
+    herbstclient {fullscreen toggle,set_attr clients.focus.floating toggle}
 
 
-super + control + m
+super + control + r
     herbstclient remove    
 
 
